@@ -9,6 +9,7 @@ dynamodb = boto3.resource('dynamodb')
 
 DEST_BUCKET = os.environ['DEST_BUCKET']
 BACKUP_TABLE = os.environ['BACKUP_TABLE']
+INDEX_NAME = os.environ['INDEX_NAME']
 
 table = dynamodb.Table(BACKUP_TABLE)
 
@@ -24,7 +25,7 @@ def handler(event, context):
     try:
         # Query the GSI to find disowned items older than 10 seconds
         response = table.query(
-            IndexName='DisownedIndex',
+            IndexName=INDEX_NAME,
             KeyConditionExpression='#status = :disowned AND disowned_at < :cutoff',
             ExpressionAttributeNames={'#status': 'status'},
             ExpressionAttributeValues={

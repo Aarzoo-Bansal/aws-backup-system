@@ -22,7 +22,8 @@ const replicatorStack = new ReplicatorStack(app, 'BackupReplicatorStack', {
 const cleanerStack = new CleanerStack(app, 'BackupCleanerStack', {
   description: 'Lambda function to clean up the disowned backup copies',
   destBucket: storageStack.destBucket,
-  backupTable: storageStack.backupTable
+  backupTable: storageStack.backupTable,
+  indexName: storageStack.indexName
 });
 
 cleanerStack.addDependency(storageStack);

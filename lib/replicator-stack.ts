@@ -29,7 +29,7 @@ export class ReplicatorStack extends cdk.Stack {
       environment: {
         SOURCE_BUCKET: props.sourceBucket.bucketName,
         DEST_BUCKET: props.destBucket.bucketName,
-        BACKUP_TABLE: props.backupTable.tableName,
+        BACKUP_TABLE: props.backupTable.tableName
       },
     });
 

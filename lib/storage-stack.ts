@@ -8,6 +8,7 @@ export class StorageStack extends cdk.Stack {
   public readonly sourceBucket: s3.Bucket;
   public readonly destBucket: s3.Bucket;
   public readonly backupTable: dynamodb.Table;
+  public readonly indexName: string;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -27,6 +28,8 @@ export class StorageStack extends cdk.Stack {
     });
 
     // DynamoDB Table
+    // Partition key = source object
+    // Sort Key = time
     this.backupTable = new dynamodb.Table(this, 'BackupTable', {
       partitionKey: {
         name: 'source_object',
@@ -41,6 +44,9 @@ export class StorageStack extends cdk.Stack {
     });
 
     // Global Secondary Index for Cleaner to query disowned items
+    // Partition Key: Status
+    // Sort Key: time
+    this.indexName = 'DisownedIndex'
     this.backupTable.addGlobalSecondaryIndex({
       indexName: 'DisownedIndex',
       partitionKey: {
@@ -54,20 +60,31 @@ export class StorageStack extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
-    // Outputs for other stacks to use
+    /************************************************************************************************************/
+    // Exporting the source bucket name so that it is visible to other stacks.
     new cdk.CfnOutput(this, 'SourceBucketName', {
       value: this.sourceBucket.bucketName,
-      exportName: 'SourceBucketName',
+      exportName: 'SourceBucketName', // This value will be used by other stacks to get the source bucket name
     });
 
+    // Exporting the name of the destination bucket
     new cdk.CfnOutput(this, 'DestBucketName', {
       value: this.destBucket.bucketName,
-      exportName: 'DestBucketName',
+      exportName: 'DestBucketName', 
     });
 
+    // Exporting the name of the DynamoDb Table
     new cdk.CfnOutput(this, 'BackupTableName', {
       value: this.backupTable.tableName,
       exportName: 'BackupTableName',
     });
+
+    // Exporting the name of the index
+    new cdk.CfnOutput(this, 'IndexName', {
+        value: this.indexName,
+        exportName: 'IndexName'
+    })
   }
+
+
 }

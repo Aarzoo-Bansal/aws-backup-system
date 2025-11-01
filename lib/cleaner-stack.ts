@@ -11,6 +11,7 @@ import * as path from 'path';
 interface CleanerStackProps extends cdk.StackProps {
   destBucket: s3.IBucket;
   backupTable: dynamodb.ITable;
+  indexName: string;
 }
 
 export class CleanerStack extends cdk.Stack {
@@ -28,6 +29,7 @@ export class CleanerStack extends cdk.Stack {
       environment: {
         DEST_BUCKET: props.destBucket.bucketName,
         BACKUP_TABLE: props.backupTable.tableName,
+        INDEX_NAME: props.indexName
       },
     });
 
