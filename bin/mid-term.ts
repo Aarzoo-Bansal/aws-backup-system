@@ -1,20 +1,30 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
-import { MidTermStack } from '../lib/mid-term-stack';
+import { CleanerStack } from '../lib/cleaner-stack';
+import { ReplicatorStack } from '../lib/replicator-stack';
+import { StorageStack } from '../lib/storage-stack';
+
 
 const app = new cdk.App();
-new MidTermStack(app, 'MidTermStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
-
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+const storageStack = new StorageStack(app, 'BackupStorageStack', {
+  description: 'S3 buckets and DynamoDB table for backup system'
 });
+
+const replicatorStack = new ReplicatorStack(app, 'BackupReplicatorStack', {
+  description: 'Lambda function to replicate objects from the source to the destination',
+  sourceBucket: storageStack.sourceBucket,
+  destBucket: storageStack.destBucket,
+  backupTable: storageStack.backupTable
+});
+
+const cleanerStack = new CleanerStack(app, 'BackupCleanerStack', {
+  description: 'Lambda function to clean up the disowned backup copies',
+  destBucket: storageStack.destBucket,
+  backupTable: storageStack.backupTable
+});
+
+cleanerStack.addDependency(storageStack);
+
+app.synth();
