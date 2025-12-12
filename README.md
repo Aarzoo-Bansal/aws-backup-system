@@ -81,11 +81,11 @@ backup-system/
 
 ## Key Features
 
-✅ **No Scan Operations**: Uses Query on primary key and GSI
-✅ **Version Control**: Maintains up to 3 most recent copies
-✅ **Graceful Deletion**: 10-second grace period before cleanup
-✅ **Event-Driven**: Automated replication via EventBridge
-✅ **Infrastructure as Code**: Complete CDK deployment
+**No Scan Operations**: Uses Query on primary key and GSI
+**Version Control**: Maintains up to 3 most recent copies
+**Graceful Deletion**: 10-second grace period before cleanup
+**Event-Driven**: Automated replication via EventBridge
+**Infrastructure as Code**: Complete CDK deployment
 
 ## Cleanup
 
@@ -93,26 +93,7 @@ To destroy all resources:
 
 ```bash
 cdk destroy --all
-```
-**Note: All the resources were created and named automatically by CDK**
 
-## Quick Demo Reference
-
-### Pre-Demo Checklist
-- [ ] All 3 stacks deployed successfully
-- [ ] CloudFormation shows CREATE_COMPLETE
-- [ ] Have Assignment1.txt and Assignment2.txt files ready
-- [ ] Know your source/destination bucket names
-- [ ] Have 5 browser tabs open (CloudFormation, S3 source, S3 dest, DynamoDB, Lambda)
-
-### Demo Flow Summary
-1. **Show stacks** in CloudFormation (3 stacks, all CREATE_COMPLETE)
-2. **Show resources** in each stack
-3. **Upload Assignment1.txt** → Verify 1 copy in dest + 1 DDB record
-4. **Upload Assignment2.txt** → Verify 2 copies + 2 DDB records  
-5. **Re-upload Assignment1.txt 3 times** → Verify only 3 copies remain
-6. **Delete Assignment1.txt** → Wait 10s → Invoke Cleaner → All copies gone
-7. **Repeat for Assignment2.txt**
 
 ## License
 
